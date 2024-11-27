@@ -34,7 +34,13 @@ class Utils:
         for i in range(len(board) - 1, -1, -1):
             if board[i][col] == 0:
                 return i
-
+    
+    #function to check if the game end
+    def check_full(self, board):
+        for i in range(len(board[0])):
+            if board[0][i] == 0:
+                return False
+        return True
 
 board = [
     [0, 0, 0, 0, 0, 0, 0],

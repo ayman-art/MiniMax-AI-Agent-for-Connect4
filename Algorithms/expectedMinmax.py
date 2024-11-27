@@ -6,7 +6,7 @@ class ExpectedMinmax():
     #function to maximize the score
     def maximize(self, board, k):
         #if node is termenal
-        if k == 0:
+        if k == 0 or self.utils.check_full(board):
             player1_score = self.utils.calculate_score(board , 1)
             player2_score = self.utils.calculate_score(board , 2)
             return player1_score - player2_score,None
@@ -26,7 +26,7 @@ class ExpectedMinmax():
     #function to minimize the score
     def minimize(self, board, k):
         #if node is termenal
-        if k == 0:
+        if k == 0 or self.utils.check_full(board):
             player1_score = self.utils.calculate_score(board , 1)
             player2_score = self.utils.calculate_score(board , 2)
             return player1_score - player2_score,None
