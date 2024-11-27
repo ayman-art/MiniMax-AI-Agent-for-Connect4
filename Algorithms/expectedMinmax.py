@@ -45,19 +45,24 @@ class ExpectedMinmax():
 
     #for chance nodes
     def chance(self, board, col, player, k):
-        correct_move = 0.6
-        wrong_move = 0.2
+        correct_move = 1
+        wrong_move = 0
         valid_columns = [col]
         #insert the valid columns and calculate probabilities based on the number of valid columns
         if col - 1 > 0 and col + 1 < 7:
-            valid_columns.append(col - 1)
-            valid_columns.append(col + 1)
+            if board[0][col - 1] == 0 and board[0][col + 1] == 0:
+                wrong_move = 0.2
+                correct_move = 0.6
+                valid_columns.append(col + 1)
+                valid_columns.append(col - 1)
         elif col - 1 > 0:
-            wrong_move = 0.4
-            valid_columns.append(col - 1)
-        else:
-            wrong_move = 0.4
-            valid_columns.append(col + 1)
+            if board[0][col - 1] == 0:
+                wrong_move = 0.4
+                valid_columns.append(col - 1)
+        elif col + 1 < 7:
+            if board[0][col + 1] == 0:
+                wrong_move = 0.4
+                valid_columns.append(col + 1)
         #initialize expected utility
         expected_utility = 0
         for c in valid_columns:
