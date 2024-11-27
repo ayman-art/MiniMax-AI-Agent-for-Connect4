@@ -41,6 +41,10 @@ class Utils:
             if board[0][i] == 0:
                 return False
         return True
+    
+    def board_to_tuple(self, board):
+        # Converts a 2D list to a tuple of tuples for hashing
+        return tuple(tuple(row) for row in board)
 
 board = [
     [0, 0, 0, 0, 0, 0, 0],
