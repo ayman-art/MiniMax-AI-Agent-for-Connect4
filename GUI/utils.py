@@ -1,7 +1,7 @@
 import pygame
 import sys
 class Config:
-    BLUE = (0, 0, 255)
+    BLUE = (81, 128, 255)
     BLACK = (0, 0, 0)
     RED = (255, 0, 0)
     YELLOW = (255, 255, 0)
