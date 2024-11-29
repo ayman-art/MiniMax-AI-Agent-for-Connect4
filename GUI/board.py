@@ -14,34 +14,33 @@ class Board:
                 cellVal = self.mat[i][j]
                 pg.draw.rect(surface, Config.BLUE, (self.x+j * Config.SQUARESIZE, self.y+(i + 1) * Config.SQUARESIZE, Config.SQUARESIZE, Config.SQUARESIZE))
                 pg.draw.circle(surface, Config.BLACK if cellVal == 0 else Config.RED if cellVal==1 else Config.YELLOW,
-                                (self.x+j * Config.SQUARESIZE + Config.SQUARESIZE // 2, self.y+(i + 1) * Config.SQUARESIZE + Config.SQUARESIZE // 2), Config.RADIUS)
-    def get_column_from_click(self, mouse_x):
-            """Returns the column index from the mouse click (x position)."""
+                                (self.x+j * Config.SQUARESIZE + Config.SQUARESIZE // 2, self.y+(i + 1) * Config.SQUARESIZE + Config.SQUARESIZE // 2),
+                                  Config.RADIUS)
+    def get_column_from_click(self, mouse_x, mouse_y):
+            if mouse_y < self.y:
+                 return None
             if self.x <= mouse_x <= self.x + self.cols * Config.SQUARESIZE:
                 col = (mouse_x - self.x) // Config.SQUARESIZE
                 return col
-            return None  # Clicked outside the board
+            return None 
 
-    def handle_click(self, mouse_x):
-        """Handles the mouse click event by calling the action for the specific column."""
-        col = self.get_column_from_click(mouse_x)
-        if col is not None:
-            # Perform action with the column number
+    def handle_click(self, mouse_x, mouse_y, turn, callback):
+        col = self.get_column_from_click(mouse_x, mouse_y)
+        if col is not None and turn != "Agent":
             print(f"Column {col} clicked!")
-            #self.drop_piece_in_column(col)  # Implement your dropping logic here
-
-    def drop_piece_in_column(self, col):
-        """Drops a piece in the selected column (dummy implementation)."""
-        for row in range(self.rows - 1, -1, -1):  # Start from the bottom row
-            if self.mat[row][col] == 0:  # Find the first empty row in this column
-                self.mat[row][col] = 1  # Assume player 1 drops a piece (red)
+            self.drop_piece_in_column(col, 2)
+            callback() 
+    def drop_piece_in_column(self, col, val):
+        for row in range(self.rows - 1, -1, -1):  
+            if self.mat[row][col] == 0: 
+                self.mat[row][col] = val 
                 break
     
     def empty_board(self):
          self.mat = [[0] * 7 for _ in range(6)]
          pg.display.update() 
 
-    def handle_event(self, event):
-        if event.type == pg.MOUSEBUTTONDOWN:  # Detect mouse clicks
-                if event.button == 1:  # Left mouse button click
-                    self.handle_click(event.pos[0]) 
+    def handle_event(self, event, turn, callback):
+        if event.type == pg.MOUSEBUTTONDOWN:  
+                if event.button == 1: 
+                    self.handle_click(event.pos[0], event.pos[1], turn, callback) 

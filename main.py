@@ -1,3 +1,3 @@
-from GUI.mainWindow import start as GUI_init
+from GUI.mainWindow import Window
 
-GUI_init()
+program = Window()

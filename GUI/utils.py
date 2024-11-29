@@ -15,4 +15,4 @@ class Config:
     WIDTH = COLS * SQUARESIZE
     HEIGHT = (ROWS + 1) * SQUARESIZE  # Extra row for the title or player turn display
     SIZE = (WIDTH, HEIGHT)
-    
+    FPS = 60
