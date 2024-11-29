@@ -1,5 +1,6 @@
 import utils
-class AlphaBetaPruning():
+from Algorithms.agentStrategy import Strategy
+class AlphaBetaPruning(Strategy):
     def __init__(self):
         self.utils = utils.Utils()
         self.memo = {}

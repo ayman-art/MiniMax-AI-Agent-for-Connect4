@@ -1,5 +1,6 @@
 import utils
-class ExpectedMinmax():
+from Algorithms.agentStrategy import Strategy
+class ExpectedMinmax(Strategy):
     def __init__(self):
         self.utils = utils.Utils()
         self.memo = {}
@@ -102,7 +103,7 @@ class ExpectedMinmax():
                     expected_utility += wrong_move * utility
         return expected_utility,None   
 
-    def expectedMinmax(self ,board , k):
+    def minmax(self ,board , k):
         self.utils.get_valid_count(board)
         _ , maxCol = self.maximize(board , k, 0)
         return maxCol

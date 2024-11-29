@@ -1,5 +1,6 @@
 import utils
-class Minmax():
+from Algorithms.agentStrategy import Strategy
+class Minmax(Strategy):
     def __init__(self):
         self.utils = utils.Utils()
         self.memo = {}
