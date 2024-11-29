@@ -1,12 +1,12 @@
 import utils
-class Minmax():
+class AlphaBetaPruning():
     def __init__(self):
         self.utils = utils.Utils()
         self.memo = {}
         self.nodes_count = 0
 
     # Function to maximize the score
-    def maximize(self, board, k, count):
+    def maximize(self, board, k, count, alpha, beta):
         # Convert the string board into a state key for memoization
         state_key = (str(board), k, count)
 
@@ -30,17 +30,21 @@ class Minmax():
                 self.utils.apply_move(board, row, col, 1)
                 #maximize the value of the game
                 self.nodes_count += 1
-                utility, _ = self.minimize(board, k - 1, count +1)
+                utility, _ = self.minimize(board, k - 1, count +1, alpha, beta)
                 self.utils.undo_move(board,row,col)
                 if utility > maxUtility:
                     maxUtility = utility
                     maxCol = col
+                if maxUtility >= beta:
+                    break
+                if maxUtility > alpha:
+                    alpha = maxUtility
         result = maxUtility, maxCol
         self.memo[state_key] = result
         return result
 
     # Function to minimize the score
-    def minimize(self, board, k, count):
+    def minimize(self, board, k, count, alpha, beta):
         # Convert the string board into a state key for memoization
         state_key = (str(board), k, count)
 
@@ -64,21 +68,21 @@ class Minmax():
                 self.utils.apply_move(board, row, col, 2)
                 #minimize the value of the game
                 self.nodes_count += 1
-                utility, _ = self.maximize(board, k - 1, count+1)
+                utility, _ = self.maximize(board, k - 1, count+1, alpha, beta)
                 self.utils.undo_move(board,row,col)
                 if utility < minUtility:
                     minUtility = utility
                     minCol = col
+                if minUtility <= alpha:
+                    break
+                if minUtility < beta:
+                    beta = minUtility
         result = minUtility, minCol
         self.memo[state_key] = result
         return result
 
     def minmax(self, board, k):
         self.utils.get_valid_count(board)
-        _, maxCol = self.maximize(board, k, 0)
+        _, maxCol = self.maximize(board, k, 0, float('-inf'), float('inf'))
         print(self.nodes_count)
         return maxCol
-
-
-        
-    

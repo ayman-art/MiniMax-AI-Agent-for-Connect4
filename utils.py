@@ -1,4 +1,7 @@
 class Utils:
+    def __init__(self):
+        self.valid_rows = []
+
     #function to calculate the score
     def calculate_score(self ,board, player):
         count = 0
@@ -29,22 +32,37 @@ class Utils:
 
         return count
 
-    #function to get the valid row
-    def get_the_valid_row(self ,board , col):
-        for i in range(len(board) - 1, -1, -1):
-            if board[i][col] == 0:
-                return i
+    def get_valid_row(self, col):
+        return self.valid_rows[col]
     
-    #function to check if the game end
-    def check_full(self, board):
-        for i in range(len(board[0])):
-            if board[0][i] == 0:
-                return False
-        return True
+    def get_valid_count(self,board):
+        valid_rows = []
+
+        for col in range(7):  
+            valid_row = -1 
+            
+            for row in range(5, -1, -1): 
+                if board[row][col] == 0:  
+                    valid_row = row 
+                    break  
+            
+            valid_rows.append(valid_row)
+        self.valid_rows = valid_rows
+        print(self.valid_rows)
     
-    def board_to_tuple(self, board):
-        # Converts a 2D list to a tuple of tuples for hashing
-        return tuple(tuple(row) for row in board)
+    def undo_move(self, board ,row, col):
+        board[row][col] = 0
+        if self.valid_rows[col] == -1:
+            self.valid_rows[col] = 0
+        else:
+            self.valid_rows[col] += 1 
+    
+    def apply_move(self, board ,row, col, player):
+        board[row][col] = player
+        if self.valid_rows[col] == 0:
+            self.valid_rows[col] = -1
+        else:
+            self.valid_rows[col] -= 1
 
 board = [
     [0, 0, 0, 0, 0, 0, 0],
