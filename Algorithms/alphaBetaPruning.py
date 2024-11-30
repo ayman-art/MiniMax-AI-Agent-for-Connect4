@@ -64,6 +64,9 @@ class AlphaBetaPruning(Strategy):
                 if maxUtility > alpha:
                     alpha = maxUtility
 
+        self.graph.node(
+            node_id, label=f"Max: Utility={maxUtility}", shape="trapezium"
+        )
         result = maxUtility, maxCol
         self.memo[state_key] = result
         return result
@@ -118,6 +121,9 @@ class AlphaBetaPruning(Strategy):
                 if minUtility < beta:
                     beta = minUtility
 
+        self.graph.node(
+            node_id, label=f"Min: Utility={minUtility}", shape="invtrapezium"
+        )
         result = minUtility, minCol
         self.memo[state_key] = result
         return result

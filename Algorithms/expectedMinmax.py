@@ -103,13 +103,13 @@ class ExpectedMinmax(Strategy):
                 valid_columns.append(col - 1)
         elif col - 1 > 0:
             if board[0][col - 1] == 0:
-                wrong_move = 0.4
-                correct_move = 0.6
+                wrong_move = 0.3
+                correct_move = 0.7
                 valid_columns.append(col - 1)
         elif col + 1 < 7:
             if board[0][col + 1] == 0:
-                wrong_move = 0.4
-                correct_move = 0.6
+                wrong_move = 0.3
+                correct_move = 0.7
                 valid_columns.append(col + 1)
 
         # Create a "Chance" node
@@ -145,13 +145,16 @@ class ExpectedMinmax(Strategy):
                     expected_utility += correct_move * utility
                 else:
                     expected_utility += wrong_move * utility
-
         self.graph.node(
-            node_id, label=f"Chance: col={col} , Utility={expected_utility}", shape="circle", width="0.1", height="0.1"
+            node_id, label=f"Chance: col={col} , Utility={round(expected_utility, 2)}", shape="circle", width="0.1",height="0.1"
         )
         return expected_utility, None
 
     def minmax(self, board, k):
+        if k == 1:
+            k = 2
+        elif k % 2 != 0:
+            k -= 1
         root_id = self.get_node_id()
         self.graph.node(root_id, label="Root", shape="trapezium")
         self.utils.get_valid_count(board)
