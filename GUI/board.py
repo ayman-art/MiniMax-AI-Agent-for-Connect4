@@ -17,7 +17,7 @@ class Board:
                                 (self.x+j * Config.SQUARESIZE + Config.SQUARESIZE // 2, self.y+(i) * Config.SQUARESIZE + Config.SQUARESIZE // 2),
                                   Config.RADIUS)
     def get_column_from_click(self, mouse_x, mouse_y):
-            if mouse_y < self.y:
+            if mouse_y < self.y or mouse_y > self.y+6*Config.SQUARESIZE:
                  return None
             if self.x <= mouse_x <= self.x + self.cols * Config.SQUARESIZE:
                 col = (mouse_x - self.x) // Config.SQUARESIZE
@@ -28,17 +28,18 @@ class Board:
         col = self.get_column_from_click(mouse_x, mouse_y)
         if col is not None and turn != "Agent":
             print(f"Column {col} clicked!")
-            self.drop_piece_in_column(col, 2)
-            callback() 
+            if self.drop_piece_in_column(col, 2):
+                callback() 
+        
     def drop_piece_in_column(self, col, val):
         for row in range(self.rows - 1, -1, -1):  
             if self.mat[row][col] == 0: 
                 self.mat[row][col] = val 
-                break
+                return True
+        return False
     
     def empty_board(self):
          self.mat = [[0] * 7 for _ in range(6)]
-         pg.display.update() 
 
     def handle_event(self, event, turn, callback):
         if event.type == pg.MOUSEBUTTONDOWN:  
