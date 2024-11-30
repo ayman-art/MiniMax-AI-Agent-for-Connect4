@@ -6,11 +6,16 @@ from pygame_widgets.dropdown import Dropdown
 from pygame_widgets.button import Button
 from pygame_widgets.slider import Slider
 from pygame_widgets.textbox import TextBox
+import webbrowser
+import os
 
 def draw_label(font, sur, text, pos):
     label = font.render(text, 1, (255,255,0))
     sur.blit(label, pos)
 class Window:
+    def open_in_browser(self):
+        
+        webbrowser.open(f"file://{self.absolute_path}")
     def reset_turn(self):
             self.turn = "-"
             self.started = False
@@ -20,7 +25,8 @@ class Window:
             
             # call score calc function
             self.start_buttonHandler()
-    
+    def make_algo(mode):
+         pass
     def start_buttonHandler(self):
             mode = self.dropdown.getSelected()
             if mode is None:
@@ -35,7 +41,8 @@ class Window:
                 # call score calc function
 
     def __init__(self):
-        
+        svg_file = "minimax_tree.svg"
+        self.absolute_path = os.path.abspath(svg_file)
         pg.init()
         self.size = width, height = 1440, 900
         self.label_font = pg.font.SysFont("monospace", 20)
@@ -44,7 +51,7 @@ class Window:
         self.clock = pg.time.Clock()
         running = True
         self.mat = [[0 for _ in range(7)] for i in range(6)]
-        self.board = Board(self.mat, 20, 20)
+        self.board = Board(self.mat, 20, 150)
         self.dropdown = Dropdown(self.window, 20, 20, 200, 50, name="Select Algorithm",
                             choices=["Minimax", "Minimax-Pruning", "Expected Minimax"],
                             borderRadius= 1, colour=Config.GREEN, values=[1, 2, 3], direction='down', textHAlign='centre'

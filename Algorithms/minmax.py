@@ -1,3 +1,4 @@
+from graphviz import Digraph
 import utils
 from Algorithms.agentStrategy import Strategy
 class Minmax(Strategy):
@@ -5,81 +6,122 @@ class Minmax(Strategy):
         self.utils = utils.Utils()
         self.memo = {}
         self.nodes_count = 0
+        self.graph = Digraph("Minimax Tree")  # Graphviz tree
+        self.node_id = 0  # Unique ID for each node in the tree
 
-    # Function to maximize the score
-    def maximize(self, board, k, count):
-        # Convert the string board into a state key for memoization
+    def get_node_id(self):
+        """Generate a unique node ID."""
+        self.node_id += 1
+        return f"Node{self.node_id}"
+
+    def maximize(self, board, k, count, parent_id=None):
         state_key = (str(board), k, count)
 
         # Check if state is already evaluated
         if state_key in self.memo:
             return self.memo[state_key]
+
+        # Create a "Max" node with a trapezium shape
+        node_id = self.get_node_id()
+        self.graph.node(
+            node_id, label=f"Max: k={k}, count={count}", shape="trapezium"
+        )
+        if parent_id:
+            self.graph.edge(parent_id, node_id)
+
+        # Terminal condition
         if k == 0 or count == 41:
             player1_score = self.utils.calculate_score(board, 1)
             player2_score = self.utils.calculate_score(board, 2)
-            result = player1_score - player2_score, None
-            self.memo[state_key] = result
-            return result
-        #initialize utility
+            utility = player1_score - player2_score
+
+            # Terminal node as rectangle
+            self.graph.node(
+                node_id, label=f"Terminal: Utility={utility}", shape="rectangle"
+            )
+            self.memo[state_key] = (utility, None)
+            return utility, None
+
         maxUtility = float('-inf')
         maxCol = None
-        #explore neighbors
+
         for col in range(7):
-            #check if the column is not full
             if board[0][col] == 0:
                 row = self.utils.get_valid_row(col)
                 self.utils.apply_move(board, row, col, 1)
-                #maximize the value of the game
                 self.nodes_count += 1
-                utility, _ = self.minimize(board, k - 1, count +1)
-                self.utils.undo_move(board,row,col)
+                utility, _ = self.minimize(board, k - 1, count + 1, node_id)
+                self.utils.undo_move(board, row, col)
                 if utility > maxUtility:
                     maxUtility = utility
                     maxCol = col
+
+        self.graph.node(
+            node_id, label=f"Max: Utility={maxUtility}", shape="trapezium"
+        )
         result = maxUtility, maxCol
         self.memo[state_key] = result
         return result
 
-    # Function to minimize the score
-    def minimize(self, board, k, count):
-        # Convert the string board into a state key for memoization
+    def minimize(self, board, k, count, parent_id=None):
         state_key = (str(board), k, count)
 
         # Check if state is already evaluated
         if state_key in self.memo:
             return self.memo[state_key]
+
+        # Create a "Min" node with an inverted trapezium shape
+        node_id = self.get_node_id()
+        self.graph.node(
+            node_id, label=f"Min: k={k}, count={count}", shape="invtrapezium"
+        )
+        if parent_id:
+            self.graph.edge(parent_id, node_id)
+
+        # Terminal condition
         if k == 0 or count == 41:
             player1_score = self.utils.calculate_score(board, 1)
             player2_score = self.utils.calculate_score(board, 2)
-            result = player1_score - player2_score, None
-            self.memo[state_key] = result
-            return result
-        #initialize utility
+            utility = player1_score - player2_score
+
+            # Terminal node as rectangle
+            self.graph.node(
+                node_id, label=f"Terminal: Utility={utility}", shape="rectangle"
+            )
+            self.memo[state_key] = (utility, None)
+            return utility, None
+
         minUtility = float('inf')
         minCol = None
-        #explore neighbors
+
         for col in range(7):
-            #check if the column is not full
             if board[0][col] == 0:
                 row = self.utils.get_valid_row(col)
                 self.utils.apply_move(board, row, col, 2)
-                #minimize the value of the game
                 self.nodes_count += 1
-                utility, _ = self.maximize(board, k - 1, count+1)
-                self.utils.undo_move(board,row,col)
+                utility, _ = self.maximize(board, k - 1, count + 1, node_id)
+                self.utils.undo_move(board, row, col)
                 if utility < minUtility:
                     minUtility = utility
                     minCol = col
+
+        self.graph.node(
+            node_id, label=f"Min: Utility={minUtility}", shape="invtrapezium"
+        )
         result = minUtility, minCol
         self.memo[state_key] = result
         return result
 
     def minmax(self, board, k):
+        root_id = self.get_node_id()
+        self.graph.node(root_id, label="Root", shape="trapezium")  # Root node
         self.utils.get_valid_count(board)
-        _, maxCol = self.maximize(board, k, 0)
-        print(self.nodes_count)
+        _, maxCol = self.maximize(board, k, 0, root_id)
+        print(f"Total nodes visited: {self.nodes_count}")
+
+        # Save the Graphviz tree
+        
         return maxCol
 
-
-        
-    
+    def render(self):
+        self.graph.render("tree", format="svg", cleanup=True)

@@ -12,9 +12,9 @@ class Board:
         for i in range(self.rows):
             for j in range(self.cols):
                 cellVal = self.mat[i][j]
-                pg.draw.rect(surface, Config.BLUE, (self.x+j * Config.SQUARESIZE, self.y+(i + 1) * Config.SQUARESIZE, Config.SQUARESIZE, Config.SQUARESIZE))
+                pg.draw.rect(surface, Config.BLUE, (self.x+j * Config.SQUARESIZE, self.y+(i) * Config.SQUARESIZE, Config.SQUARESIZE, Config.SQUARESIZE))
                 pg.draw.circle(surface, Config.BLACK if cellVal == 0 else Config.RED if cellVal==1 else Config.YELLOW,
-                                (self.x+j * Config.SQUARESIZE + Config.SQUARESIZE // 2, self.y+(i + 1) * Config.SQUARESIZE + Config.SQUARESIZE // 2),
+                                (self.x+j * Config.SQUARESIZE + Config.SQUARESIZE // 2, self.y+(i) * Config.SQUARESIZE + Config.SQUARESIZE // 2),
                                   Config.RADIUS)
     def get_column_from_click(self, mouse_x, mouse_y):
             if mouse_y < self.y:
