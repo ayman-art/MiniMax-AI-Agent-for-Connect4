@@ -7,11 +7,10 @@ class AlphaBetaPruning(Strategy):
         self.utils = utils.Utils()
         self.memo = {}
         self.nodes_count = 0
-        self.graph = Digraph("AlphaBetaPruning Tree")  # Graphviz tree
-        self.node_id = 0  # Unique ID for each node in the tree
+        self.graph = Digraph("AlphaBetaPruning Tree") 
+        self.node_id = 0
 
     def get_node_id(self):
-        """Generate a unique node ID."""
         self.node_id += 1
         return f"Node{self.node_id}"
 
@@ -22,10 +21,10 @@ class AlphaBetaPruning(Strategy):
         if state_key in self.memo:
             return self.memo[state_key]
 
-        # Create a "Max" node with a trapezium shape
+        # Create a "Max" node 
         node_id = self.get_node_id()
         self.graph.node(
-            node_id, label=f"Max: k={k}, count={count}", shape="trapezium"
+            node_id, label=f"Max: k={k}", shape="trapezium"
         )
         if parent_id:
             self.graph.edge(parent_id, node_id)
@@ -36,7 +35,7 @@ class AlphaBetaPruning(Strategy):
             player2_score = self.utils.calculate_score(board, 2)
             utility = player1_score - player2_score
 
-            # Terminal node as rectangle
+            # Terminal node
             self.graph.node(
                 node_id, label=f"Terminal: Utility={utility}", shape="rectangle"
             )
@@ -57,7 +56,7 @@ class AlphaBetaPruning(Strategy):
                     maxUtility = utility
                     maxCol = col
                 if maxUtility >= beta:
-                    # Alpha-beta pruning: if maxUtility >= beta, prune
+                    # Alpha-beta pruning
                     self.graph.node(
                         node_id, label=f"Pruned (maxUtility >= beta)", shape="trapezium", style="dashed"
                     )
@@ -76,10 +75,10 @@ class AlphaBetaPruning(Strategy):
         if state_key in self.memo:
             return self.memo[state_key]
 
-        # Create a "Min" node with an inverted trapezium shape
+        # Create a "Min" node 
         node_id = self.get_node_id()
         self.graph.node(
-            node_id, label=f"Min: k={k}, count={count}", shape="invtrapezium"
+            node_id, label=f"Min: k={k}", shape="invtrapezium"
         )
         if parent_id:
             self.graph.edge(parent_id, node_id)
@@ -90,7 +89,7 @@ class AlphaBetaPruning(Strategy):
             player2_score = self.utils.calculate_score(board, 2)
             utility = player1_score - player2_score
 
-            # Terminal node as rectangle
+            # Terminal node 
             self.graph.node(
                 node_id, label=f"Terminal: Utility={utility}", shape="rectangle"
             )
@@ -111,7 +110,7 @@ class AlphaBetaPruning(Strategy):
                     minUtility = utility
                     minCol = col
                 if minUtility <= alpha:
-                    # Alpha-beta pruning: if minUtility <= alpha, prune
+                    # Alpha-beta pruning:
                     self.graph.node(
                         node_id, label=f"Pruned (minUtility <= alpha)", shape="invtrapezium", style="dashed"
                     )
@@ -124,15 +123,11 @@ class AlphaBetaPruning(Strategy):
         return result
 
     def minmax(self, board, k):
-        """Start the Alpha-Beta pruning process and export the Graphviz tree."""
         root_id = self.get_node_id()
-        self.graph.node(root_id, label="Root", shape="trapezium")  # Root node
+        self.graph.node(root_id, label="Root", shape="trapezium")  
         self.utils.get_valid_count(board)
         _, maxCol = self.maximize(board, k, 0, float('-inf'), float('inf'), root_id)
         print(f"Total nodes visited: {self.nodes_count}")
-
-        # Save the Graphviz tree
-        
         return maxCol
     
     def render(self):

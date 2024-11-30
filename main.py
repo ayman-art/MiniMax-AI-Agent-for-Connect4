@@ -15,6 +15,7 @@ board = [
 res = Algorithms.expectedMinmax.ExpectedMinmax()
 # # print(res.get_valid_count(board))
 # # print(res.minmax(board , 10))
-res.minmax(board, 3)
+res.minmax(board, 4)
+res.render()
 
 
