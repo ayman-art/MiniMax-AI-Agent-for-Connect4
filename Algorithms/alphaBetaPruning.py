@@ -15,7 +15,7 @@ class AlphaBetaPruning(Strategy):
         return f"Node{self.node_id}"
 
     def maximize(self, board, k, count, alpha, beta, parent_id=None):
-        state_key = (str(board), k, count)
+        state_key = (str(board))
 
         # Check if state is already evaluated
         if state_key in self.memo:
@@ -31,9 +31,7 @@ class AlphaBetaPruning(Strategy):
 
         # Terminal condition
         if k == 0 or count == 41:
-            player1_score = self.utils.calculate_score(board, 1)
-            player2_score = self.utils.calculate_score(board, 2)
-            utility = player1_score - player2_score
+            utility = self.utils.heuristic(board)
 
             # Terminal node
             self.graph.node(
@@ -88,9 +86,7 @@ class AlphaBetaPruning(Strategy):
 
         # Terminal condition
         if k == 0 or count == 41:
-            player1_score = self.utils.calculate_score(board, 1)
-            player2_score = self.utils.calculate_score(board, 2)
-            utility = player1_score - player2_score
+            utility = self.utils.heuristic(board)
 
             # Terminal node 
             self.graph.node(
