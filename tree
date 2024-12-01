@@ -1,0 +1,9 @@
+digraph "ExpectedMinmax Tree" {
+	Node1 [label=Root shape=trapezium]
+	Node2 [label="Max: k=5, count=0" shape=trapezium]
+	Node1 -> Node2
+	Node3 [label="Chance: col=3" height=0.128 shape=circle width=0.128]
+	Node2 -> Node3 [label="1, Wrong: 0"]
+	Node4 [label="Min: k=4, count=1" shape=invtrapezium]
+	Node3 -> Node4
+}

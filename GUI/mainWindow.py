@@ -1,3 +1,4 @@
+
 import pygame as pg
 from GUI.board import Board
 from GUI.utils import Config
@@ -58,7 +59,9 @@ class Window:
                 self.board.drop_piece_in_column(val, 1)
                 self.turn = "Player"
                 self.p1_score = self.util.calculate_score(self.mat, 1)
+                self.util.player1_score = self.p1_score
                 self.p2_score = self.util.calculate_score(self.mat, 2)
+                self.util.player2_score = self.p2_score
 
     def __init__(self):
         self.util = Utils()
@@ -66,7 +69,7 @@ class Window:
         svg_file = "tree.svg"
         self.absolute_path = os.path.abspath(svg_file)
         pg.init()
-        self.size = width, height = 750, 900
+        self.size = width, height = 750, 800
         self.label_font = pg.font.SysFont("monospace", 20)
         self.window = pg.display.set_mode(self.size)
         pg.display.set_caption("Connect 4 Agent")

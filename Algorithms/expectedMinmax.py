@@ -32,9 +32,7 @@ class ExpectedMinmax(Strategy):
 
         # Terminal condition
         if k == 0 or count == 41:
-            player1_score = self.utils.calculate_score(board, 1)
-            player2_score = self.utils.calculate_score(board, 2)
-            utility = player1_score - player2_score
+            utility = self.utils.heuristic(board)
 
             # Terminal node as rectangle
             self.graph.node(
@@ -76,9 +74,7 @@ class ExpectedMinmax(Strategy):
 
         # Terminal condition
         if k == 0 or count == 41:
-            player1_score = self.utils.calculate_score(board, 1)
-            player2_score = self.utils.calculate_score(board, 2)
-            utility = player1_score - player2_score
+            utility = self.utils.heuristic(board)
 
             # Terminal node as rectangle
             self.graph.node(

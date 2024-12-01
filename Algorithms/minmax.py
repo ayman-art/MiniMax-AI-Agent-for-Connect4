@@ -31,9 +31,7 @@ class Minmax(Strategy):
 
         # Terminal condition
         if k == 0 or count == 41:
-            player1_score = self.utils.calculate_score(board, 1)
-            player2_score = self.utils.calculate_score(board, 2)
-            utility = player1_score - player2_score
+            utility = self.utils.heuristic(board)
 
             # Terminal node as rectangle
             self.graph.node(
@@ -80,9 +78,7 @@ class Minmax(Strategy):
 
         # Terminal condition
         if k == 0 or count == 41:
-            player1_score = self.utils.calculate_score(board, 1)
-            player2_score = self.utils.calculate_score(board, 2)
-            utility = player1_score - player2_score
+            utility = self.utils.heuristic(board)
 
             # Terminal node as rectangle
             self.graph.node(
@@ -118,7 +114,7 @@ class Minmax(Strategy):
         self.utils.get_valid_count(board)
         _, maxCol = self.maximize(board, k, 0, root_id)
         print(f"Total nodes visited: {self.nodes_count}")
-
+        print(f"Scores: {self.utils.calculate_score(board,1)} - {self.utils.calculate_score(board,2)}")
         # Save the Graphviz tree
         
         return maxCol
