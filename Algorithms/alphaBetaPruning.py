@@ -16,7 +16,7 @@ class AlphaBetaPruning(Strategy):
         return f"Node{self.node_id}"
 
     def maximize(self, board, k, count, alpha, beta, parent_id=None):
-        state_key = (str(board), k, count)
+        state_key = (str(board))
 
         # Check if state is already evaluated
         if state_key in self.memo:

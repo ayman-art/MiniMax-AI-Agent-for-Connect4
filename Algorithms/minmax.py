@@ -15,7 +15,7 @@ class Minmax(Strategy):
         return f"Node{self.node_id}"
 
     def maximize(self, board, k, count, parent_id=None):
-        state_key = (str(board), k, count)
+        state_key = (str(board))
 
         # Check if state is already evaluated
         if state_key in self.memo:
@@ -62,7 +62,7 @@ class Minmax(Strategy):
         return result
 
     def minimize(self, board, k, count, parent_id=None):
-        state_key = (str(board), k, count)
+        state_key = (str(board))
 
         # Check if state is already evaluated
         if state_key in self.memo:

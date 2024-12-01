@@ -69,7 +69,7 @@ class Window:
         svg_file = "tree.svg"
         self.absolute_path = os.path.abspath(svg_file)
         pg.init()
-        self.size = width, height = 750, 800
+        self.size = width, height = 750, 900
         self.label_font = pg.font.SysFont("monospace", 20)
         self.window = pg.display.set_mode(self.size)
         pg.display.set_caption("Connect 4 Agent")
