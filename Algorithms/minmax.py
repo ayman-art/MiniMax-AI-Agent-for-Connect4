@@ -6,11 +6,10 @@ class Minmax(Strategy):
         self.utils = utils.Utils()
         self.memo = {}
         self.nodes_count = 0
-        self.graph = Digraph("Minimax Tree")  # Graphviz tree
-        self.node_id = 0  # Unique ID for each node in the tree
+        self.graph = Digraph("Minimax Tree")
+        self.node_id = 0
 
     def get_node_id(self):
-        """Generate a unique node ID."""
         self.node_id += 1
         return f"Node{self.node_id}"
 
@@ -24,7 +23,7 @@ class Minmax(Strategy):
         # Create a "Max" node with a trapezium shape
         node_id = self.get_node_id()
         self.graph.node(
-            node_id, label=f"Max: k={k}, count={count}", shape="trapezium"
+            node_id, label=f"Max: k={k}", shape="trapezium"
         )
         if parent_id:
             self.graph.edge(parent_id, node_id)
@@ -33,7 +32,7 @@ class Minmax(Strategy):
         if k == 0 or count == 41:
             utility = self.utils.heuristic(board)
 
-            # Terminal node as rectangle
+            # Terminal node
             self.graph.node(
                 node_id, label=f"Terminal: Utility={utility}", shape="rectangle"
             )
@@ -68,10 +67,10 @@ class Minmax(Strategy):
         if state_key in self.memo:
             return self.memo[state_key]
 
-        # Create a "Min" node with an inverted trapezium shape
+        # Create a "Min" node
         node_id = self.get_node_id()
         self.graph.node(
-            node_id, label=f"Min: k={k}, count={count}", shape="invtrapezium"
+            node_id, label=f"Min: k={k}", shape="invtrapezium"
         )
         if parent_id:
             self.graph.edge(parent_id, node_id)
@@ -90,7 +89,7 @@ class Minmax(Strategy):
         elif k == 0:
             utility = self.utils.heuristic(board)
 
-            # Terminal node as rectangle
+            # Terminal node
             self.graph.node(
                 node_id, label=f"Terminal: Utility={utility}", shape="rectangle"
             )
@@ -121,13 +120,10 @@ class Minmax(Strategy):
 
     def minmax(self, board, k):
         root_id = self.get_node_id()
-        self.graph.node(root_id, label="Root", shape="trapezium")  # Root node
+        self.graph.node(root_id, label="Root", shape="trapezium") 
         self.utils.get_valid_count(board)
         _, maxCol = self.maximize(board, k, 0, root_id)
         print(f"Total nodes visited: {self.nodes_count}")
-        print(f"Scores: {self.utils.calculate_score(board,1)} - {self.utils.calculate_score(board,2)}")
-        # Save the Graphviz tree
-        
         return maxCol
 
     def render(self):
