@@ -77,7 +77,7 @@ class Minmax(Strategy):
 
         # Terminal condition
         if count == 41:
-            utility = self.utils.calculate_score(board,1)
+            utility = self.utils.calculate_score(board,1) - self.utils.calculate_score(board,2)
 
             # Terminal node as rectangle
             self.graph.node(

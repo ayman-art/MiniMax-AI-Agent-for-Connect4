@@ -13,6 +13,7 @@ from pygame_widgets.slider import Slider
 from pygame_widgets.textbox import TextBox
 import webbrowser
 import os
+import time
 
 def draw_label(font, sur, text, pos):
     label = font.render(text, 1, (255,255,0))
@@ -52,7 +53,12 @@ class Window:
             if self.started == False or self.turn == "Agent":
                 self.started = True
                 self.turn = "Agent"
+                
+                start_time = time.time()
                 val = self.algo.minmax(self.mat, k)
+                end_time = time.time()
+                print(f"Time taken: {end_time - start_time} seconds")
+                
                 if val is None:
                      self.__init__()
                 print(val)
