@@ -61,7 +61,7 @@ class Window:
                 self.time = end_time - start_time
                 
                 if val is None:
-                     self.__init__()
+                     return
                 print(val)
                 self.board.drop_piece_in_column(val, 1)
                 self.turn = "Player"
