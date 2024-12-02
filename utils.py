@@ -151,7 +151,7 @@ class Utils:
         score, winning_opportunities = self.score_and_winning_opportunities(board, computer)
         opponent_score, blocking_opportunities = self.score_and_blocking_opportunities(board, human)
         
-        score -= opponent_score
+        score = (score - opponent_score) * 10
         
         
         # Adjust heuristic based on state

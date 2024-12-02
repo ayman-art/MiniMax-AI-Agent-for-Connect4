@@ -31,7 +31,17 @@ class ExpectedMinmax(Strategy):
             self.graph.edge(parent_id, node_id)
 
         # Terminal condition
-        if k == 0 or count == 41:
+        if count == 41:
+            utility = self.utils.calculate_score(board,1)
+
+            # Terminal node as rectangle
+            self.graph.node(
+                node_id, label=f"Terminal: Utility={utility}", shape="rectangle"
+            )
+            self.memo[state_key] = (utility, None)
+            return utility, None
+            
+        elif k == 0:
             utility = self.utils.heuristic(board)
 
             # Terminal node as rectangle
@@ -40,7 +50,7 @@ class ExpectedMinmax(Strategy):
             )
             self.memo[state_key] = (utility, None)
             return utility, None
-
+        
         maxUtility = float('-inf')
         maxCol = None
 
