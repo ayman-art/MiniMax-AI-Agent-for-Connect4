@@ -245,6 +245,12 @@ class Utils:
         else:
             self.valid_rows[col] -= 1
 
+    def check_full(self):
+        for i in range(len(self.valid_rows)):
+            if self.valid_rows[i] != -1:
+                return False
+        return True
+
 
 board = [
     [0, 0, 0, 0, 0, 0, 0],

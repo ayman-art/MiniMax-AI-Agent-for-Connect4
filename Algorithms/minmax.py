@@ -13,7 +13,7 @@ class Minmax(Strategy):
         self.node_id += 1
         return f"Node{self.node_id}"
 
-    def maximize(self, board, k, count, parent_id=None):
+    def maximize(self, board, k, parent_id=None):
         state_key = (str(board))
 
         # Check if state is already evaluated
@@ -29,7 +29,7 @@ class Minmax(Strategy):
             self.graph.edge(parent_id, node_id)
 
         # Terminal condition
-        if k == 0 or count == 41:
+        if k == 0 or self.utils.check_full():
             utility = self.utils.heuristic(board)
 
             # Terminal node
@@ -47,7 +47,7 @@ class Minmax(Strategy):
                 row = self.utils.get_valid_row(col)
                 self.utils.apply_move(board, row, col, 1)
                 self.nodes_count += 1
-                utility, _ = self.minimize(board, k - 1, count + 1, node_id)
+                utility, _ = self.minimize(board, k - 1, node_id)
                 self.utils.undo_move(board, row, col)
                 if utility > maxUtility:
                     maxUtility = utility
@@ -60,7 +60,7 @@ class Minmax(Strategy):
         self.memo[state_key] = result
         return result
 
-    def minimize(self, board, k, count, parent_id=None):
+    def minimize(self, board, k, parent_id=None):
         state_key = (str(board))
 
         # Check if state is already evaluated
@@ -76,7 +76,7 @@ class Minmax(Strategy):
             self.graph.edge(parent_id, node_id)
 
         # Terminal condition
-        if count == 41:
+        if self.utils.check_full():
             utility = self.utils.calculate_score(board,1) - self.utils.calculate_score(board,2)
 
             # Terminal node as rectangle
@@ -105,7 +105,7 @@ class Minmax(Strategy):
                 row = self.utils.get_valid_row(col)
                 self.utils.apply_move(board, row, col, 2)
                 self.nodes_count += 1
-                utility, _ = self.maximize(board, k - 1, count + 1, node_id)
+                utility, _ = self.maximize(board, k - 1, node_id)
                 self.utils.undo_move(board, row, col)
                 if utility < minUtility:
                     minUtility = utility
@@ -122,7 +122,7 @@ class Minmax(Strategy):
         root_id = self.get_node_id()
         self.graph.node(root_id, label="Root", shape="trapezium") 
         self.utils.get_valid_count(board)
-        _, maxCol = self.maximize(board, k, 0, root_id)
+        _, maxCol = self.maximize(board, k,root_id)
         print(f"Total nodes visited: {self.nodes_count}")
         return maxCol
 

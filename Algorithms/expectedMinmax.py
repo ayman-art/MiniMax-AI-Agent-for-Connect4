@@ -14,7 +14,7 @@ class ExpectedMinmax(Strategy):
         return f"Node{self.node_id}"
 
     # Function to maximize the score
-    def maximize(self, board, k, count, parent_id=None, probability=None):
+    def maximize(self, board, k, parent_id=None, probability=None):
         node_id = self.get_node_id()
         self.graph.node(
             node_id, label=f"Max: k={k}", shape="trapezium"
@@ -23,7 +23,7 @@ class ExpectedMinmax(Strategy):
             self.graph.edge(parent_id, node_id,label=f"{probability}")
 
         # Terminal condition
-        if count == 41:
+        if self.utils.check_full():
             utility = self.utils.calculate_score(board,1) - self.utils.calculate_score(board,2)
 
             # Terminal node as rectangle
@@ -46,7 +46,7 @@ class ExpectedMinmax(Strategy):
 
         for col in range(7):
             if board[0][col] == 0:
-                utility, _ = self.chance(board, col, 1, k - 1, count, node_id)
+                utility, _ = self.chance(board, col, 1, k - 1, node_id)
                 # Maximize the value of the game
                 if utility > maxUtility:
                     maxUtility = utility
@@ -58,16 +58,16 @@ class ExpectedMinmax(Strategy):
         return result
 
     # Function to minimize the score
-    def minimize(self, board, k, count, parent_id=None , probability=None):
+    def minimize(self, board, k, parent_id=None , probability=None):
         node_id = self.get_node_id()
         self.graph.node(
-            node_id, label=f"Min: k={k}, count={count}", shape="invtrapezium"
+            node_id, label=f"Min: k={k}", shape="invtrapezium"
         )
         if parent_id:
             self.graph.edge(parent_id, node_id,label=f"{probability}")
 
         # Terminal condition
-        if k == 0 or count == 41:
+        if k == 0 or self.utils.check_full():
             utility = self.utils.heuristic(board)
 
             # Terminal node
@@ -81,7 +81,7 @@ class ExpectedMinmax(Strategy):
 
         for col in range(7):
             if board[0][col] == 0:
-                utility, _ = self.chance(board, col, 2, k - 1, count, node_id)
+                utility, _ = self.chance(board, col, 2, k - 1, node_id)
                 # Minimize the value of the game
                 if utility < minUtility:
                     minUtility = utility
@@ -94,7 +94,7 @@ class ExpectedMinmax(Strategy):
         return result
 
     # For chance nodes
-    def chance(self, board, col, player, k, count, parent_id=None):
+    def chance(self, board, col, player, k, parent_id=None):
         correct_move = 1
         wrong_move = 0
         valid_columns = [col]
@@ -137,14 +137,14 @@ class ExpectedMinmax(Strategy):
                 # Calculate utility for all expected nodes
                 if player == 1:
                     if c == col:
-                        utility, _ = self.minimize(board, k - 1, count + 1, node_id,correct_move)
+                        utility, _ = self.minimize(board, k - 1, node_id,correct_move)
                     else:
-                        utility, _ = self.minimize(board, k - 1, count + 1, node_id,wrong_move)
+                        utility, _ = self.minimize(board, k - 1, node_id,wrong_move)
                 else:
                     if c == col:
-                        utility, _ = self.maximize(board, k - 1, count + 1, node_id, correct_move)
+                        utility, _ = self.maximize(board, k - 1, node_id, correct_move)
                     else:
-                        utility, _ = self.maximize(board, k - 1, count + 1, node_id, wrong_move)
+                        utility, _ = self.maximize(board, k - 1, node_id, wrong_move)
                 self.utils.undo_move(board, row, c)
                 if c == col:
                     expected_utility += correct_move * utility
@@ -163,7 +163,7 @@ class ExpectedMinmax(Strategy):
         root_id = self.get_node_id()
         self.graph.node(root_id, label="Root", shape="trapezium")
         self.utils.get_valid_count(board)
-        _, maxCol = self.maximize(board, k, 0, root_id,None)
+        _, maxCol = self.maximize(board, k,root_id,None)
         print(f"Total nodes visited: {self.node_id}")
         return maxCol
     
