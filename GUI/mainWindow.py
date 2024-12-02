@@ -58,6 +58,7 @@ class Window:
                 val = self.algo.minmax(self.mat, k)
                 end_time = time.time()
                 print(f"Time taken: {end_time - start_time} seconds")
+                self.time = end_time - start_time
                 
                 if val is None:
                      self.__init__()
@@ -85,7 +86,8 @@ class Window:
         self.board = Board(self.mat, 20, 150)
         self.dropdown = Dropdown(self.window, 20, 20, 200, 30, name="Expected Minimax",
                             choices=["Minimax", "Minimax-Pruning", "Expected Minimax"],
-                            borderRadius= 1, colour=Config.GREEN, values=[1, 2, 3], direction='down', textHAlign='centre'
+                            borderRadius= 1, colour=Config.GREEN, values=[1, 2, 3], direction='down', textHAlign='centre',
+                            font=pg.font.SysFont("Arial", 12)
                             )
         self.button = Button(self.window, 230, 20, 100, 50, text="AI Start",
                               onClick=self.start_buttonHandler, pressedColour=Config.GREEN)
@@ -99,6 +101,7 @@ class Window:
         self.p1_score = ""
         self.p2_score = ""
         self.turn = "-"
+        self.time = 0
         self.started = False
 
 
@@ -114,7 +117,8 @@ class Window:
             pygame_widgets.update(events)
             draw_label(self.label_font, self.window, "P1 Score: "+ str(self.p1_score), (20, 800))
             draw_label(self.label_font, self.window, "P2 Score: "+ str(self.p2_score), (20, 850))
-            draw_label(self.label_font, self.window, "Turn: "+ self.turn, (350, 825))
+            draw_label(self.label_font, self.window, "Turn: "+ self.turn, (350, 800))
+            draw_label(self.label_font, self.window, "Time: "+ str(round(self.time, 2)), (350, 850))
             self.output.setText(self.slider.getValue())
             pg.display.update()
         pg.quit()
