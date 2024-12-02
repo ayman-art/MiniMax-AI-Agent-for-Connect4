@@ -96,7 +96,8 @@ class Utils:
             for c in center_cols:
                 if board[r][c] == player:
                     center_count += 1
-        return center_count // 3
+                    
+        return center_count // 3 + sum(board[-1][c] == player for c in center_cols) - 1
 
     # Edge penalization to avoid placing pieces on the edges
     def edge_penalization(self, board, player):
@@ -135,10 +136,62 @@ class Utils:
                     count += 1
 
         return count
+
+    def caclulate_score_for_heuristic(self, board, player):
+        count = 0
+        
+        # Horizontal check
+        for r in range(len(board)):
+            cnt = 0
+            c = 3
+            while c < len(board[0]) and board[r][c] == player:
+                cnt += 1
+                c += 1
+            c = 2
+            while c >= 0 and board[r][c] == player:
+                cnt += 1
+                c -= 1
+            if cnt >= 4:
+                count += cnt - 3        
+        
+        # Vertical check
+        for c in range(len(board[0])):
+            cnt = 0
+            r = 2
+            while r >= 0 and board[r][c] == player:
+                cnt += 1
+                r -= 1
+            r = 3
+            while r < len(board) and board[r][c] == player:
+                cnt += 1
+                r += 1
+            if cnt >= 4:
+                count += cnt - 3
+            
+
+        #right diagonal check
+        for r in range(len(board) - 3):
+            for c in range(len(board[0]) - 3):
+                if all(board[r+i][c+i] == player for i in range(4)):
+                    count += 1
+
+        #left diagonal check
+        for r in range(3, len(board)):
+            for c in range(len(board[0]) - 3):
+                if all(board[r-i][c+i] == player for i in range(4)):
+                    count += 1
+
+        return count
+        
     
     # Heuristic function to evaluate board state
     def heuristic(self, board, computer=1, human=2):
         # Compute current scores
+        computer_score = self.caclulate_score_for_heuristic(board, computer)
+        human_score = self.caclulate_score_for_heuristic(board, human)
+        center_control = self.center_control(board, computer)
+        edge_penalization = self.edge_penalization(board, computer)
+        
         score_difference = self.player1_score - self.player2_score
         
         # Determine the state
@@ -147,35 +200,17 @@ class Utils:
             state = "winning"
         elif score_difference <= -3:
             state = "losing"
-
-        score, winning_opportunities = self.score_and_winning_opportunities(board, computer)
-        opponent_score, blocking_opportunities = self.score_and_blocking_opportunities(board, human)
+            
+        score = 10 * (computer_score - human_score) + (center_control + edge_penalization) / 2
         
-        score = (score - opponent_score) * 10
-        
-        
-        # Adjust heuristic based on state
-        if state == "winning":
-            # Focus on blocking and consolidating
-            score += blocking_opportunities * 10  # Higher focus on blocking
-            score += self.center_control(board, computer) * 5
-            score += self.edge_penalization(board, computer) * 3
-            score += winning_opportunities * 2
+        if state == "winning": # Focus On Blocking the Opponent
+            score -= human_score * 2
+        elif state == "losing": # Focus on Scoring Points
+            score += computer_score * 2
 
-        elif state == "losing":
-            # Focus on creating winning opportunities
-            score += winning_opportunities * 10  # Higher focus on winning
-            score += self.center_control(board, computer) * 5
-            score += self.edge_penalization(board, computer) * 3
-            score += blocking_opportunities * 2
-
-        else:  # close_game
-            # Balance offense and defense
-            score += winning_opportunities * 5
-            score += blocking_opportunities * 5
-            score += self.center_control(board, computer) * 3
-            score += self.edge_penalization(board, computer) * 2
-
+            
+            
+            
         return score
     
     def get_valid_row(self, col):
